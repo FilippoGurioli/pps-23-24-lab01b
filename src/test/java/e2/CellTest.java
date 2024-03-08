@@ -5,42 +5,42 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CellTest {
     
-    private Cell cell;
+    protected Cell cell;
+
+    @BeforeEach
+    public void beforeEach() {
+        this.instantiateCell();
+    }
 
     @Test
     public void instance() {
-        var startPosition = new Pair<Integer, Integer>(0,0);
-        this.cell = new CellImpl(CellType.NORMAL, startPosition);
         assertFalse(this.cell.isDiscovered());
-        assertEquals(startPosition, this.cell.getPosition());
+        assertEquals(new Pair<>(0,0), this.cell.getPosition());
     }
 
     @Test
     public void invalidInstance() {
-        var invalidStartPosition = new Pair<Integer, Integer>(-1, -2);
-        assertThrows(IllegalArgumentException.class, () -> this.cell = new CellImpl(CellType.NORMAL, invalidStartPosition));
+        assertThrows(IllegalArgumentException.class, () -> this.illegalInstanceGenerator());
     }
 
     @Test
     public void getType() {
-        instantiateCell();
         assertEquals(CellType.BOMB, this.cell.getType());
     }
 
     @Test
     public void discoverMethod() {
-        instantiateCell();
         this.cell.discover();
         assertTrue(this.cell.isDiscovered());
     }
 
     @Test
     public void throwsExceptionAtTheSecondDiscover() {
-        instantiateCell();
         assertThrows(IllegalStateException.class, () -> {
             this.cell.discover();
             this.cell.discover();
@@ -49,19 +49,21 @@ public class CellTest {
 
     @Test
     public void adjacency() {
-        instantiateCell();
         var adjacentCell = new CellImpl(CellType.NORMAL, new Pair<>(1,0));
         assertTrue(this.cell.isAdjacentTo(adjacentCell));
     }
 
     @Test
     public void adjacencyFailure() {
-        instantiateCell();
         var notAdjacentCell = new CellImpl(CellType.NORMAL, new Pair<>(5,5));
         assertFalse(this.cell.isAdjacentTo(notAdjacentCell));
     }
 
-    private void instantiateCell() {
+    protected void instantiateCell() {
         this.cell = new CellImpl(CellType.BOMB, new Pair<>(0,0));
+    }
+
+    protected void illegalInstanceGenerator() {
+        this.cell = new CellImpl(CellType.NORMAL, new Pair<>(-1, -2));
     }
 }

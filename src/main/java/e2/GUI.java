@@ -26,14 +26,16 @@ public class GUI extends JFrame {
         ActionListener onClick = (e)->{
             final JButton bt = (JButton)e.getSource();
             final Pair<Integer,Integer> pos = buttons.get(bt);
-            boolean aMineWasFound = true; // call the logic here to tell it that cell at 'pos' has been seleced
+            this.logics.expand(this.logics.getCellAt(pos));
+            boolean aMineWasFound = this.logics.isGameOver(); // call the logic here to tell it that cell at 'pos' has been seleced
             if (aMineWasFound) {
                 quitGame();
                 JOptionPane.showMessageDialog(this, "You lost!!");
+                System.exit(0);
             } else {
                 drawBoard();            	
             }
-            boolean isThereVictory = false; // call the logic here to ask if there is victory
+            boolean isThereVictory = this.logics.isVictory(); // call the logic here to ask if there is victory
             if (isThereVictory){
                 quitGame();
                 JOptionPane.showMessageDialog(this, "You won!!");
@@ -48,6 +50,8 @@ public class GUI extends JFrame {
                 if (bt.isEnabled()){
                     final Pair<Integer,Integer> pos = buttons.get(bt);
                     // call the logic here to put/remove a flag
+                    var cell = logics.getCellAt(pos);
+                    cell.setFlag(!cell.isFlagged());
                 }
                 drawBoard(); 
             }
@@ -72,6 +76,13 @@ public class GUI extends JFrame {
             // call the logic here
             // if this button is a mine, draw it "*"
             // disable the button
+            Cell cell = this.logics.getCellAt(entry.getValue());
+            if (cell.getType().equals(CellType.BOMB)) {
+                entry.getKey().setText("*");
+            } else {
+                entry.getKey().setText("" + this.logics.getNearBombCount(cell));
+            }
+            entry.getKey().setEnabled(false);
     	}
     }
 
@@ -80,6 +91,15 @@ public class GUI extends JFrame {
             // call the logic here
             // if this button is a cell with counter, put the number
             // if this button has a flag, put the flag
+            FlaggableCell cell = this.logics.getCellAt(entry.getValue());
+            if (cell.isDiscovered()) {
+                entry.getKey().setEnabled(false);
+                entry.getKey().setText(this.logics.getNearBombCount(cell) + "");
+            } else if (cell.isFlagged()) {
+                entry.getKey().setText("F");
+            } else {
+                entry.getKey().setText("");
+            }
     	}
     }
     

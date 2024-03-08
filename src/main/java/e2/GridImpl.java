@@ -9,10 +9,10 @@ import java.util.Set;
 public class GridImpl implements Grid {
 
     private final int size;
-    private final Set<Cell> grid = new HashSet<>();
+    private final Set<FlaggableCell> grid = new HashSet<>();
     private final double bombProbability;
 
-    public static final double DEFAULT_BOMB_PROBABILITY = 0.70;
+    public static final double DEFAULT_BOMB_PROBABILITY = 0.90;
     public static final int DEFAULT_SIZE = 5;
 
     public GridImpl(int size, double bombProbability) {
@@ -29,9 +29,9 @@ public class GridImpl implements Grid {
         for (int i = 0; i < this.getSize(); i++) {
             for (int j = 0; j < this.getSize(); j++) {
                 if (random.nextDouble() > this.bombProbability) {
-                    this.grid.add(new CellImpl(CellType.BOMB, new Pair<>(i,j)));
+                    this.grid.add(new FlaggableCellImpl(CellType.BOMB, new Pair<>(i,j)));
                 } else {
-                    this.grid.add(new CellImpl(CellType.NORMAL, new Pair<>(i,j)));
+                    this.grid.add(new FlaggableCellImpl(CellType.NORMAL, new Pair<>(i,j)));
                 }
             }
         }
@@ -51,7 +51,7 @@ public class GridImpl implements Grid {
     }
 
     @Override
-    public Cell getCellAt(int x, int y) {
+    public FlaggableCell getCellAt(int x, int y) {
         return this.grid.stream()
             .filter(cell -> cell.getPosition().equals(new Pair<>(x, y)))
             .findFirst()
@@ -64,18 +64,18 @@ public class GridImpl implements Grid {
     }
 
 	@Override
-	public Iterator<Cell> getCellIterator() {
+	public Iterator<FlaggableCell> getCellIterator() {
         return this.grid.iterator();
 	}
 
 	@Override
-	public Set<Cell> getAllCells() {
-        return new HashSet<Cell>(this.grid);
+	public Set<FlaggableCell> getAllCells() {
+        return new HashSet<FlaggableCell>(this.grid);
 	}
 
 	@Override
-	public Set<Cell> getAdjacentTo(int x, int y) {
-        var adjacentSet = new HashSet<Cell>();
+	public Set<FlaggableCell> getAdjacentTo(int x, int y) {
+        var adjacentSet = new HashSet<FlaggableCell>();
         this.grid
             .stream()
             .filter(cell -> cell.isAdjacentTo(this.getCellAt(x, y)))
@@ -84,8 +84,8 @@ public class GridImpl implements Grid {
 	}
 
 	@Override
-	public Set<Cell> getBombs() {
-        var bombs = new HashSet<Cell>();
+	public Set<FlaggableCell> getBombs() {
+        var bombs = new HashSet<FlaggableCell>();
         this.grid
             .stream()
             .filter(cell -> cell.getType().equals(CellType.BOMB))

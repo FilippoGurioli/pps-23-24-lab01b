@@ -7,17 +7,17 @@ public interface Grid {
 
 	int getSize();
 
-    Cell getCellAt(int x, int y);
+    FlaggableCell getCellAt(int x, int y);
 
 	double getBombProbability();
 
-    Iterator<Cell> getCellIterator();
+    Iterator<FlaggableCell> getCellIterator();
 
-    Set<Cell> getAllCells();
+    Set<FlaggableCell> getAllCells();
 
-    Set<Cell> getAdjacentTo(int x, int y);
+    Set<FlaggableCell> getAdjacentTo(int x, int y);
 
-    Set<Cell> getBombs();
+    Set<FlaggableCell> getBombs();
 
     int getNearBombCount(Cell cellNearToBomb);
 }
