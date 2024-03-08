@@ -82,4 +82,29 @@ public class GridImpl implements Grid {
             .forEach(cell -> adjacentSet.add(cell));
         return adjacentSet;
 	}
+
+	@Override
+	public Set<Cell> getBombs() {
+        var bombs = new HashSet<Cell>();
+        this.grid
+            .stream()
+            .filter(cell -> cell.getType().equals(CellType.BOMB))
+            .forEach(cell -> bombs.add(cell));
+        return bombs;
+    }
+
+	@Override
+	public int getNearBombCount(Cell cell) {
+        if (!this.grid.contains(cell)) {
+            throw new IllegalArgumentException("The passed cell is not in this grid");
+        }
+        if (cell.getType().equals(CellType.BOMB)) {
+            return -1;
+        } else {
+            return (int)this.getAdjacentTo(cell.getPosition().getX(), cell.getPosition().getY())
+                .stream()
+                .filter(c -> c.getType() == CellType.BOMB)
+                .count();
+        }
+	}
 }

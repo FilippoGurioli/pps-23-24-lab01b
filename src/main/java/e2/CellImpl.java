@@ -26,10 +26,9 @@ public class CellImpl implements Cell {
 	}
 
     @Override
-    public CellType discover() {
+    public void discover() {
         if (!this.isDiscovered()) {
             this.isDiscovered = true;
-            return this.type;
         } else {
             throw new IllegalStateException("Cannot discover an already discovered cell");
         }
@@ -42,5 +41,10 @@ public class CellImpl implements Cell {
             Math.abs(this.position.getY() - adjacentCell.getPosition().getY())
         );
         return distance.getX() <= 1 && distance.getY() <= 1 && !adjacentCell.getPosition().equals(this.getPosition());
+    }
+
+    @Override
+    public CellType getType() {
+        return this.type;
     }
 }

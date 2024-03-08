@@ -26,6 +26,12 @@ public class CellTest {
     }
 
     @Test
+    public void getType() {
+        instantiateCell();
+        assertEquals(CellType.BOMB, this.cell.getType());
+    }
+
+    @Test
     public void discoverMethod() {
         instantiateCell();
         this.cell.discover();
@@ -33,16 +39,12 @@ public class CellTest {
     }
 
     @Test
-    public void typeAccessibleIfDiscovered() {
-        this.cell = new CellImpl(CellType.BOMB, new Pair<>(0,0));
-        assertEquals(CellType.BOMB, this.cell.discover());
-    }
-
-    @Test
     public void throwsExceptionAtTheSecondDiscover() {
         instantiateCell();
-        this.cell.discover();
-        assertThrows(IllegalStateException.class, () -> this.cell.discover());
+        assertThrows(IllegalStateException.class, () -> {
+            this.cell.discover();
+            this.cell.discover();
+        });
     }
 
     @Test

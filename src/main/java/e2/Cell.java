@@ -6,7 +6,9 @@ public interface Cell {
 
     Pair<Integer,Integer> getPosition();
 
-    CellType discover();
+    void discover();
 
     boolean isAdjacentTo(Cell adjacentCell);
+
+	CellType getType();
 }

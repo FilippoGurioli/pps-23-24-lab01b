@@ -16,4 +16,8 @@ public interface Grid {
     Set<Cell> getAllCells();
 
     Set<Cell> getAdjacentTo(int x, int y);
+
+    Set<Cell> getBombs();
+
+    int getNearBombCount(Cell cellNearToBomb);
 }

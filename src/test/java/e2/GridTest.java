@@ -1,7 +1,9 @@
 package e2;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -82,6 +84,43 @@ public class GridTest {
                 .anyMatch(pos -> pos.equals(position))
             );
         }
+    }
+
+    @Test
+    public void getBombs() {
+        instantiate();
+        var bombs = this.grid.getBombs();
+        assertAll(
+            () -> assertNotNull(bombs),
+            () -> assertFalse(bombs.isEmpty())
+        );
+    }
+
+    @Test
+    public void getNearBombCount() {
+        instantiate();
+        var adjacent = getFirstAdjacentToBomb();
+        assertTrue(this.grid.getNearBombCount(adjacent) >= 1);
+    }
+
+    private Cell getFirstAdjacentToBomb() {
+        var bombIterator = this.grid.getBombs().iterator();
+        do {
+            var bomb = bombIterator.next();
+            var adjacentIterator = this.grid.getAdjacentTo(bomb.getPosition().getX(), bomb.getPosition().getY()).iterator();
+            do {
+                var adjacent = adjacentIterator.next();
+                if (!adjacent.getType().equals(CellType.BOMB)) return adjacent;
+            } while (adjacentIterator.hasNext());
+        } while (bombIterator.hasNext());
+        throw new IllegalStateException("There is not a single bomb cell with a normal cell close to it");
+    }
+
+    @Test
+    public void getNearBombCountPassingABomb() {
+        instantiate();
+        var bomb = this.grid.getBombs().iterator().next();
+        assertEquals(-1, this.grid.getNearBombCount(bomb));
     }
 
     private void instantiate() {
